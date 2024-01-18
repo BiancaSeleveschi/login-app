@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Box, Button, Input, Typography, InputAdornment } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useDispatch, useSelector } from "react-redux";
-import {setUserIsLoggedIn }from "../redux/UserReducer"
+import { useDispatch } from "react-redux";
+import { setUserIsLoggedIn } from "../redux/UserReducer";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
@@ -15,7 +15,9 @@ export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const auth = getAuth();
   const dispatch = useDispatch();
- 
+  const navigate = useNavigate();
+
+
   const handleTogglePassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
@@ -30,11 +32,11 @@ export const Login = () => {
       const user = userCredential.user;
       toast.success("You are now logged in successfully!");
       console.log("User signed in successfully:", user);
-      dispatch(setUserIsLoggedIn(true))
-    } catch (error) {
+      dispatch(setUserIsLoggedIn(true));
+     } catch (error) {
       console.error("Error signing in:", error);
       setShowAlert(true);
-      dispatch(setUserIsLoggedIn(false))
+      dispatch(setUserIsLoggedIn(false));
     }
   };
   return (
@@ -125,7 +127,7 @@ export const Login = () => {
           color="primary"
         >
           Login
-        </Button>{" "}
+        </Button>
         <ToastContainer />
         <p
           style={{

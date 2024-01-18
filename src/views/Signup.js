@@ -9,7 +9,8 @@ import {
   createUserWithEmailAndPassword,
   fetchSignInMethodsForEmail,
 } from "firebase/auth";
-
+import { v4 as uuid } from "uuid";
+ 
 export const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,7 +36,12 @@ export const Signup = () => {
         console.error("Error signing up: Email already exists");
         return;
       }
-
+      let newUser = {
+        id: uuid,
+        firstName:firstName,
+        lastName:lastName,
+        email: email
+      }
       await createUserWithEmailAndPassword(auth, email, password);
       console.log("User signed up successfully!");
       toast.success("Your account has been created!");

@@ -6,8 +6,8 @@ const loginSlice = createSlice({
   reducers: {
     setUserIsLoggedIn: (state, action) => {
       state.isLoggedIn = action.payload;
-      console.log("ise logged in:", state.isLoggedIn)
     },
+    
   },
 });
 
