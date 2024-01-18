@@ -2,19 +2,41 @@ import React, { useState } from "react";
 import { Box, Button, Input, Typography, InputAdornment } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Link } from "react-router-dom";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useDispatch, useSelector } from "react-redux";
+import {setUserIsLoggedIn }from "../redux/UserReducer"
 
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showAlertEmail, setShowAlertEmail] = useState(false);
-  const [showAlertPassword, setShowAlertPassword] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
+  const auth = getAuth();
+  const dispatch = useDispatch();
+ 
   const handleTogglePassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  const handleLogin = () => {};
+  const handleLogin = async (email, password) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      toast.success("You are now logged in successfully!");
+      console.log("User signed in successfully:", user);
+      dispatch(setUserIsLoggedIn(true))
+    } catch (error) {
+      console.error("Error signing in:", error);
+      setShowAlert(true);
+      dispatch(setUserIsLoggedIn(false))
+    }
+  };
   return (
     <div>
       <Typography
@@ -36,8 +58,7 @@ export const Login = () => {
           width: 500,
           margin: "auto",
           fontSize: "16px",
-          py: 8,
-          mb: 5,
+          py: 2,
         }}
       >
         <Input
@@ -48,7 +69,7 @@ export const Login = () => {
           type="text"
           placeholder="Email"
           color="secondary"
-          sx={{ display: "flex", margin: "auto", mt: 5, width: 325 }}
+          sx={{ display: "flex", margin: "auto", mt: 10, width: 325 }}
         />
         <Input
           value={password}
@@ -75,17 +96,17 @@ export const Login = () => {
             </InputAdornment>
           }
         />
-        {(showAlertPassword || showAlertEmail) && (
-          <p style={{ color: "red", marginLeft: 90, marginTop: 0 }}>
-            Invalid email or password
+        {showAlert && (
+          <p style={{ color: "red", textAlign: "center" }}>
+            Invalid email address or password
           </p>
         )}
-
         <div style={{ textAlign: "center", marginTop: 20 }}>
           <Link
             to="/password-reset"
             style={{
               textDecoration: "none",
+              color: "gray",
               padding: "8px 16px",
               transition: "color 0.3s ease-in-out",
             }}
@@ -96,25 +117,33 @@ export const Login = () => {
           </Link>
         </div>
         <Button
-          onClick={handleLogin}
-          sx={{ display: "flex", m: "auto", mt: 10, marginBottom: 5 }}
+          onClick={() => {
+            handleLogin(email, password);
+          }}
+          sx={{ display: "flex", m: "auto", mt: 5, marginBottom: 5 }}
           variant="contained"
           color="primary"
         >
           Login
-        </Button>
+        </Button>{" "}
+        <ToastContainer />
+        <p
+          style={{
+            textAlign: "center",
+            fontSize: "18px",
+          }}
+        >
+          Need to Signup?
+          <Link
+            style={{ textDecoration: "none", color: "gray" }}
+            onMouseEnter={(e) => (e.target.style.color = "gray")}
+            onMouseLeave={(e) => (e.target.style.color = "blue")}
+            to="/signup"
+          >
+            {""} Create Account
+          </Link>
+        </p>
       </Box>
-      <p
-        style={{
-          textAlign: "center",
-          fontSize: "18px",
-        }}
-      >
-        Need to Signup?
-        <Link style={{ textDecoration: "none", color: "blue" }} to="/signup">
-          {""} Create Account
-        </Link>
-      </p>
     </div>
   );
 };
