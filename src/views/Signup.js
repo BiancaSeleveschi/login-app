@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, Input, Typography, InputAdornment } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -27,23 +27,21 @@ export const Signup = () => {
   const [showConfirmedPassword, setShowConfirmedPassword] = useState(false);
   const [messageConfirmAlert, setmMssageConfirmAlert] = useState("");
   const auth = getAuth();
+  const navigate = useNavigate();
+
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    console.log("Checking email existence for:", email);
-    console.log("Checking e", e);
-
     try {
       const signInMethods = await fetchSignInMethodsForEmail(auth, email);
       if (signInMethods.length > 0) {
         console.error("Error signing up: Email already exists");
         return;
       }
-      console.log("Sign-in methods:", signInMethods);
-
       await createUserWithEmailAndPassword(auth, email, password);
       console.log("User signed up successfully!");
       toast.success("Your account has been created!");
+      // navigate("/login");
     } catch (error) {
       setShowAlertFirstName(firstName === "" || firstName === " ");
       setShowAlertLastName(lastName === "" || lastName === " ");

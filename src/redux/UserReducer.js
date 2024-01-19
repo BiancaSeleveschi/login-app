@@ -2,13 +2,13 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const loginSlice = createSlice({
   name: "users",
-  initialState: { isLoggedIn: false },
+  initialState: {
+    isLoggedIn: sessionStorage.getItem("isLoggedIn") === "true" || false,
+  },
   reducers: {
-    setUsers: (state, action) => {
-      
-    },
     setUserIsLoggedIn: (state, action) => {
       state.isLoggedIn = action.payload;
+      sessionStorage.setItem("isLoggedIn", state.isLoggedIn);
     },
   },
 });

@@ -2,30 +2,36 @@ import { Input, Typography, Button } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "firebase/auth";
-import { getAuth } from "firebase/auth";
-import { sendPasswordResetEmail } from "firebase/auth";
+import {
+  getAuth,
+  sendPasswordResetEmail,
+  fetchSignInMethodsForEmail,
+} from "firebase/auth";
 
-export const PasswordReset = (e) => {
-  const [emailAddress, setEmailAddres] = useState("");
+export const PasswordReset = () => {
+  const [emailAddress, setEmailAddress] = useState("");
   const [showAlertEmail, setShowAlertEmail] = useState(false);
   const [messageAlert, setMessageAlert] = useState(false);
   const navigate = useNavigate();
   const auth = getAuth();
 
-  const resetPassword = () => {
-    const user = auth.currentUser;
-    if (!user) {
-      console.error("No user is currently authenticated");
-      return;
+  const resetPassword = async (emailAddress) => {
+    try {
+      await sendPasswordResetEmail(auth, emailAddress);
+      console.log("Password reset email sent successfully");
+      navigate("/login");
+    } catch (error) {
+      if (emailAddress === "" || emailAddress === " ") {
+        setShowAlertEmail(true);
+        setMessageAlert("Please enter your email");
+      } else if (!emailAddress.includes("@, .")) {
+        setShowAlertEmail(true);
+        setMessageAlert("Please enter a valid email address");
+      }
+      console.error("Error sending :", error);
     }
-    sendPasswordResetEmail(auth, emailAddress)
-      .then(() => {
-        console.log("success");
-      })
-      .catch((error) => {
-        console.log("eroare", error);
-      });
   };
+
   return (
     <div>
       <Typography
@@ -54,7 +60,7 @@ export const PasswordReset = (e) => {
       <Input
         value={emailAddress || ""}
         onChange={(e) => {
-          setEmailAddres(e.target.value);
+          setEmailAddress(e.target.value);
         }}
         type="text"
         placeholder="Email"
@@ -68,7 +74,7 @@ export const PasswordReset = (e) => {
           width: 325,
         }}
       />
-      {!showAlertEmail && (
+      {showAlertEmail && (
         <span
           style={{
             color: "rgb(112, 0, 0)",
@@ -94,7 +100,7 @@ export const PasswordReset = (e) => {
         }}
         variant="contained"
       >
-        Send
+        Reset Password
       </Button>
     </div>
   );

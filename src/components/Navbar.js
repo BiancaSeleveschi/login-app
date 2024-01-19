@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { setUserIsLoggedIn } from "../redux/UserReducer";
 import { getAuth, signOut } from "firebase/auth";
 
-export default function ButtonAppBar() {
+export default function Navbar() {
   const userIsLoggedIn = useSelector((state) => state.users.isLoggedIn);
   const dispatch = useDispatch();
   const navigate = useNavigate();
