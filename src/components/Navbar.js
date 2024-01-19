@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { setUserIsLoggedIn } from "../redux/UserReducer";
 import { getAuth, signOut } from "firebase/auth";
 
+const navItems = ["Home"];
+
 export default function Navbar() {
   const userIsLoggedIn = useSelector((state) => state.users.isLoggedIn);
   const dispatch = useDispatch();
@@ -26,10 +28,27 @@ export default function Navbar() {
   const login = () => {
     navigate("/login");
   };
+  const navigateTo = (name) => {
+    const path = `/${name.toLowerCase().replace(/\s+/g, "-")}`;
+    navigate(path);
+  };
   return (
     <Box sx={{ flexGrow: 1, mx: -1, mt: -1 }}>
       <AppBar position="static" sx={{ backgroundColor: "black" }}>
         <Toolbar>
+           <Box sx={{ display: { xs: "none", sm: "block" } }}>
+            {navItems.map((item) => (
+              <Button
+                key={item}
+                sx={{ color: "#fff" }}
+                onClick={() => {
+                  navigateTo(item);
+                }}
+              >
+                {item}
+              </Button>
+            ))}
+          </Box>
           <Box sx={{ flexGrow: 1 }} />
           {userIsLoggedIn ? (
             <Button

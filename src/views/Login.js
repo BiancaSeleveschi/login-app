@@ -34,7 +34,7 @@ export const Login = () => {
       toast.success("You are now logged in successfully!");
       console.log("User signed in successfully:", user);
       dispatch(setUserIsLoggedIn(true));
-      navigate("/");
+      navigate("/home");
     } catch (error) {
       console.error("Error signing in:", error);
       setShowAlert(true);
