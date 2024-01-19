@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Box, Button, Input, Typography, InputAdornment } from "@mui/material";
 import { Link } from "react-router-dom";
+import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -9,8 +11,7 @@ import {
   createUserWithEmailAndPassword,
   fetchSignInMethodsForEmail,
 } from "firebase/auth";
-import { v4 as uuid } from "uuid";
- 
+
 export const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,19 +30,17 @@ export const Signup = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    console.log("Checking email existence for:", email);
+    console.log("Checking e", e);
+
     try {
       const signInMethods = await fetchSignInMethodsForEmail(auth, email);
-
       if (signInMethods.length > 0) {
         console.error("Error signing up: Email already exists");
         return;
       }
-      let newUser = {
-        id: uuid,
-        firstName:firstName,
-        lastName:lastName,
-        email: email
-      }
+      console.log("Sign-in methods:", signInMethods);
+
       await createUserWithEmailAndPassword(auth, email, password);
       console.log("User signed up successfully!");
       toast.success("Your account has been created!");
@@ -202,11 +201,9 @@ export const Signup = () => {
           }}
           endAdornment={
             <InputAdornment position="end">
-              {showPassword ? (
-                <VisibilityIcon onClick={handleTogglePassword} />
-              ) : (
-                <VisibilityIcon onClick={handleTogglePassword} />
-              )}
+              <IconButton onClick={handleTogglePassword} edge="end">
+                {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+              </IconButton>
             </InputAdornment>
           }
         />
@@ -233,11 +230,13 @@ export const Signup = () => {
           }}
           endAdornment={
             <InputAdornment position="end">
-              {showConfirmedPassword ? (
-                <VisibilityIcon onClick={handleToggleConfirmedPassword} />
-              ) : (
-                <VisibilityIcon onClick={handleToggleConfirmedPassword} />
-              )}
+              <IconButton onClick={handleToggleConfirmedPassword} edge="end">
+                {showConfirmedPassword ? (
+                  <VisibilityOffIcon />
+                ) : (
+                  <VisibilityIcon />
+                )}
+              </IconButton>
             </InputAdornment>
           }
         />

@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import UserReducer from "./redux/UserReducer";
-import firebaseApp from "./firebase"
+import firebaseApp from './firebase'; 
 import { getAuth } from 'firebase/auth';
 export const auth = getAuth(firebaseApp);
 

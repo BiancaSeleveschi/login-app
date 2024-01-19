@@ -1,5 +1,26 @@
-.App {
-  text-align: center;
+/* Home.css */
+@keyframes moveArrow {
+  0% {
+    top: 35%;
+    right: 43%;
+  }
+  50% {
+    top: 10%;
+    right: 10%;
+  }
+  100% {
+    top: 35%;
+    right: 43%;
+    opacity: 0;  
+  }
 }
 
- 
+.animated-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 30px solid black;
+  animation: moveArrow 5s forwards; 
+}

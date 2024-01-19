@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Box, Button, Input, Typography, InputAdornment } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import IconButton from "@mui/material/IconButton";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
@@ -17,7 +19,6 @@ export const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
   const handleTogglePassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
@@ -33,7 +34,8 @@ export const Login = () => {
       toast.success("You are now logged in successfully!");
       console.log("User signed in successfully:", user);
       dispatch(setUserIsLoggedIn(true));
-     } catch (error) {
+      navigate("/");
+    } catch (error) {
       console.error("Error signing in:", error);
       setShowAlert(true);
       dispatch(setUserIsLoggedIn(false));
@@ -90,11 +92,9 @@ export const Login = () => {
           }}
           endAdornment={
             <InputAdornment position="end">
-              {showPassword ? (
-                <VisibilityIcon onClick={handleTogglePassword} />
-              ) : (
-                <VisibilityIcon onClick={handleTogglePassword} />
-              )}
+              <IconButton onClick={handleTogglePassword} edge="end">
+                {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+              </IconButton>
             </InputAdornment>
           }
         />
@@ -103,21 +103,22 @@ export const Login = () => {
             Invalid email address or password
           </p>
         )}
-        <div style={{ textAlign: "center", marginTop: 20 }}>
-          <Link
-            to="/password-reset"
-            style={{
-              textDecoration: "none",
-              color: "gray",
-              padding: "8px 16px",
-              transition: "color 0.3s ease-in-out",
-            }}
-            onMouseEnter={(e) => (e.target.style.color = "blue")}
-            onMouseLeave={(e) => (e.target.style.color = "gray")}
-          >
-            Forgot password?
-          </Link>
-        </div>
+        <Link
+          to="/password-reset"
+          style={{
+            textDecoration: "none",
+            color: "gray",
+            padding: "8px 16px",
+            transition: "color 0.3s ease-in-out",
+            display: "block",
+            textAlign: "center",
+            marginTop: 20,
+          }}
+          onMouseEnter={(e) => (e.target.style.color = "blue")}
+          onMouseLeave={(e) => (e.target.style.color = "gray")}
+        >
+          Forgot password?
+        </Link>
         <Button
           onClick={() => {
             handleLogin(email, password);
