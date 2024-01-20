@@ -11,6 +11,15 @@ import {
   createUserWithEmailAndPassword,
   fetchSignInMethodsForEmail,
 } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  FacebookAuthProvider,
+} from "firebase/auth";
+import GoogleIcon from "@mui/icons-material/Google";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import { setUserIsLoggedIn } from "../redux/UserReducer";
+import { useDispatch } from "react-redux";
 
 export const Signup = () => {
   const [email, setEmail] = useState("");
@@ -28,7 +37,9 @@ export const Signup = () => {
   const [messageConfirmAlert, setmMssageConfirmAlert] = useState("");
   const auth = getAuth();
   const navigate = useNavigate();
-
+  const googleAuthProvider = new GoogleAuthProvider();
+  const dispatch = useDispatch();
+  const facebookAuthProvider = new FacebookAuthProvider();
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -88,6 +99,43 @@ export const Signup = () => {
     } else {
       setShowConfirmedPassword(false);
     }
+  };
+  const signUpWithGoogle = () => {
+    signInWithPopup(auth, googleAuthProvider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+        console.log("Sign up successful. ", user, token);
+        dispatch(setUserIsLoggedIn(true));
+        navigate("/home");
+      })
+      .catch((error) => {
+        console.log("Error signing up:", error.code);
+        console.log("Error signing up:", error.message);
+        console.log("Error signing up:", error.customData.email);
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        console.log("Credential:", credential);
+      });
+  };
+  const signUpWithFacebook = () => {
+    const auth = getAuth();
+    signInWithPopup(auth, facebookAuthProvider)
+      .then((result) => {
+        const user = result.user;
+        const credential = FacebookAuthProvider.credentialFromResult(result);
+        const accessToken = credential.accessToken;
+        console.log("Sign up successful. ", user, accessToken);
+        dispatch(setUserIsLoggedIn(true));
+        navigate("/home");
+      })
+      .catch((error) => {
+        console.log("Error signing up:", error.code);
+        console.log("Error signing up:", error.message);
+        console.log("Error signing up:", error.customData.email);
+        const credential = FacebookAuthProvider.credentialFromError(error);
+        console.log("Credential:", credential);
+      });
   };
   const handleTogglePassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -245,13 +293,22 @@ export const Signup = () => {
         )}
         <Button
           onClick={handleSignup}
-          sx={{ display: "flex", m: "auto", mt: 5, marginBottom: 5 }}
+          sx={{ display: "flex", m: "auto", mt: 5, marginBottom: 4 }}
           variant="contained"
           color="primary"
         >
           Sign Up
         </Button>
         <ToastContainer />
+        <p style={{ textAlign: "center" }}>or sign up with:</p>
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 7 }}>
+          <Button onClick={signUpWithGoogle}>
+            <GoogleIcon />
+          </Button>
+          <Button onClick={signUpWithFacebook}>
+            <FacebookIcon />
+          </Button>
+        </Box>
         <p
           style={{
             textAlign: "center",
